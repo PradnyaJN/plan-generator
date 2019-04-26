@@ -1,26 +1,25 @@
 # plan-generator
 Loan repayment plan generator
 Simple RESTful API build for generating loan repayment plan for Lendico
-
 Plan generator developed as a Maven application using Spring Boot & Java8
+
 
 How to run Plan Generator ?
 
-
 Clone this repository:
 
-$ git clone https://github.com/PradnyaJN/plan-generator
+  $ git clone https://github.com/PradnyaJN/plan-generator
 
 Build with Maven
 
-$ cd <git_home>/plan-generator/plan-generator
-$ mvn install
+  $ cd <git_home>/plan-generator/plan-generator
+  $ mvn install
 
 This will package application as a Jar file along wth embedded tomcat server as part of Spring boot standalone application.
 Start server by launching application using generated Jar plan-generator-0.0.1-SNAPSHOT.jar
 
-$ cd <git_home>/plan-generator/plan-generator/target 
-$ java -jar plan-generator-0.0.1-SNAPSHOT.jar
+  $ cd <git_home>/plan-generator/plan-generator/target 
+  $ java -jar plan-generator-0.0.1-SNAPSHOT.jar
 
 Above command will start plan-generator application on the tomcat server at port specified in application.properties file (currently set to 8081)
 
