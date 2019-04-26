@@ -6,30 +6,31 @@ Plan generator developed as a Maven application using Spring Boot & Java8
 
 --How to run Plan Generator ?
 
-1.Clone this repository:
+  1.Clone this repository:
 
-  $ git clone https://github.com/PradnyaJN/plan-generator
+      $ git clone https://github.com/PradnyaJN/plan-generator
 
-2.Build with Maven
+  2.Build with Maven
 
-  $ cd <git_home>/plan-generator/plan-generator
-  $ mvn install
+      $ cd <git_home>/plan-generator/plan-generator
+      $ mvn install
 
-3. Execute jar file - 
-Above mvn install command will package application as a Jar file along wth embedded tomcat server as part of Spring boot standalone application.
-Start server by launching application using generated Jar plan-generator-0.0.1-SNAPSHOT.jar
+  3. Execute jar file - 
+      Above mvn install command will package application as a Jar file along wth embedded tomcat server as part of 
+      Spring boot standalone application.
+      Start server by launching application using generated Jar plan-generator-0.0.1-SNAPSHOT.jar
 
-  $ cd <git_home>/plan-generator/plan-generator/target 
-  $ java -jar plan-generator-0.0.1-SNAPSHOT.jar
+    $ cd <git_home>/plan-generator/plan-generator/target 
+    $ java -jar plan-generator-0.0.1-SNAPSHOT.jar
 
-Above command will start plan-generator application on the tomcat server at port specified in application.properties file (currently set to 8081)
+  This will start plan-generator application on the tomcat server at port specified in application.properties file (currently set to 8081)
 
 --How to Generate a Plan:
 
-Submit HTTP POST request to http://localhost:8081/generate-plan using HTTP client ,
-Provide Loan details in JSON format as specified below,
+  Submit HTTP POST request to http://localhost:8081/generate-plan using HTTP client ,
+  Provide Loan details in JSON format as specified below,
 
-Example JSON payload,
+  Example JSON payload,
 
 {
   "loanAmount": "100",
