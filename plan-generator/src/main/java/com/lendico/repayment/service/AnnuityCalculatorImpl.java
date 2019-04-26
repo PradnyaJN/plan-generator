@@ -5,10 +5,12 @@ import java.math.RoundingMode;
 
 import org.springframework.stereotype.Service;
 
+import com.lendico.repayment.model.LoanPayload;
+
 @Service
 public class AnnuityCalculatorImpl implements AnnuityCalculator {
 
-	private static final double RATE_IN_DECIMALS = 100.0;
+	private static final double PERCENT_CONVERSION = 100.0;
 	private static final int MONTHS_IN_YEAR = 12;
 
 	/*
@@ -23,15 +25,22 @@ public class AnnuityCalculatorImpl implements AnnuityCalculator {
 	 */
 	@Override
 	public BigDecimal calculateAnnuity(BigDecimal loanAmount, Double interestRate, int duration) {
-		Double interestRatePerMonth = (interestRate / RATE_IN_DECIMALS) / MONTHS_IN_YEAR;
-		double numerator = loanAmount.doubleValue() * interestRatePerMonth;
-		double denominator = 1 - Math.pow(1 + interestRatePerMonth, -duration);
+		Double nominalRatePerPeriod = (interestRate / PERCENT_CONVERSION) / (MONTHS_IN_YEAR);
+		double numerator = loanAmount.doubleValue() * nominalRatePerPeriod;
+		double denominator = 1 - Math.pow(1 + nominalRatePerPeriod, -duration);
 
 		double annuity = numerator / denominator;
 		BigDecimal annuityInBigDecimal = new BigDecimal(annuity);
 		annuityInBigDecimal = annuityInBigDecimal.setScale(2, RoundingMode.HALF_EVEN);
 
 		return annuityInBigDecimal;
+	}
+
+	@Override
+	public void calculateAnnuity(LoanPayload payload) {
+		BigDecimal annuity = this.calculateAnnuity(payload.getLoanAmount(), payload.getNominalRate().doubleValue(),
+				payload.getDuration());
+		payload.setAnnuity(annuity);
 	}
 
 }

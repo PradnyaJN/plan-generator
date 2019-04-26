@@ -6,6 +6,7 @@ package com.lendico.repayment.service;
 import static org.junit.Assert.assertEquals;
 
 import java.math.BigDecimal;
+import java.util.Date;
 
 import org.junit.After;
 import org.junit.Before;
@@ -14,6 +15,8 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
+
+import com.lendico.repayment.model.LoanPayload;
 
 /**
  * @author parsh
@@ -54,6 +57,16 @@ public class AnnuityCalculatorTest {
 	public final void testCalculateAnnuity() {
 		assertEquals(BigDecimal.valueOf(219.36),
 				annuityCalculator.calculateAnnuity(loanAmount, interestRate, duration));
+
+	}
+
+	@Test
+	public final void testLoanPayload() {
+		LoanPayload payload = new LoanPayload(duration, new BigDecimal(interestRate), loanAmount,
+				new Date(System.currentTimeMillis()));
+		annuityCalculator.calculateAnnuity(payload);
+		assertEquals(new BigDecimal("219.36"), payload.getAnnuity());
+
 	}
 
 }

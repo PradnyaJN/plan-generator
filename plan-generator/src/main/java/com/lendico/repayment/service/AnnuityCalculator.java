@@ -2,10 +2,10 @@ package com.lendico.repayment.service;
 
 import java.math.BigDecimal;
 
-import org.springframework.stereotype.Service;
+import com.lendico.repayment.model.LoanPayload;
 
 
-@Service
+
 public interface AnnuityCalculator {
 
 	/**
@@ -20,4 +20,9 @@ public interface AnnuityCalculator {
 	 * @return Annuity amount to be paid every month 
 	 */
 	public BigDecimal calculateAnnuity(BigDecimal loanAmount,Double interestRate, int duration);
+
+	public void calculateAnnuity(LoanPayload payload);
+
 }
+
+
