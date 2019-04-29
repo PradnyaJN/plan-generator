@@ -13,8 +13,8 @@ public interface RepaymentCalculator {
 
 	BigDecimal calculateRemainingOutstandingPrincipal(Repayment repayment);
 
-	Repayment calculateRepayment(LoanPayload payload);
+	Repayment calculateRepayment(LoanPayload payload,boolean isLast);
 
-	Repayment calculateRepayment(LoanPayload payload, Repayment prevRepayment);
+	Repayment calculateRepayment(LoanPayload payload, Repayment prevRepayment, boolean isLast);
 
 }

@@ -56,33 +56,55 @@ public class RepaymentCalculatorImpl implements RepaymentCalculator {
 		if (remainingPrincipal.compareTo(BigDecimal.ZERO) < 1) {
 			remainingPrincipal = BigDecimal.ZERO.setScale(0, RoundingMode.HALF_EVEN);
 		}
+
 		return remainingPrincipal;
 	}
 
 	@Override
-	public Repayment calculateRepayment(LoanPayload payload, Repayment prevRepayment) {
+	public Repayment calculateRepayment(LoanPayload payload, Repayment prevRepayment, boolean isLastInstallment) {
 		if (prevRepayment == null) {
-			return calculateRepayment(payload);
+			return calculateRepayment(payload, isLastInstallment);
 		}
 		return calculateRepayment(prevRepayment.getDate().plusMonths(1),
-				prevRepayment.getRemainingOutstandingPrincipal(), payload.getAnnuity(), payload.getNominalRate());
+				prevRepayment.getRemainingOutstandingPrincipal(), payload.getAnnuity(), payload.getNominalRate(),
+				isLastInstallment);
 	}
 
 	@Override
-	public Repayment calculateRepayment(LoanPayload payload) {
+	public Repayment calculateRepayment(LoanPayload payload, boolean isLastInstallment) {
 		return calculateRepayment(payload.getStartDateAsLocalDate(), payload.getLoanAmount(), payload.getAnnuity(),
-				payload.getNominalRate());
+				payload.getNominalRate(), isLastInstallment);
 	}
 
 	private Repayment calculateRepayment(LocalDateTime payoutDate, BigDecimal initialOutstandingPrincipal,
-			BigDecimal borrowerPaymentAmount, BigDecimal nominalInterestRate) {
+			BigDecimal borrowerPaymentAmount, BigDecimal nominalInterestRate, boolean isLastInstallment) {
 		Repayment repayment = new Repayment();
 		repayment.setDate(payoutDate);
 		repayment.setInitialOutstandingPrincipal(initialOutstandingPrincipal);
 		repayment.setBorrowerPaymentAmount(borrowerPaymentAmount);
 		repayment.setInterest(calculateInterest(repayment, nominalInterestRate));
 		repayment.setPrincipal(calculatePrincipalAmount(repayment));
-		repayment.setRemainingOutstandingPrincipal(calculateRemainingOutstandingPrincipal(repayment));
+		BigDecimal outStandingPrincipal = calculateRemainingOutstandingPrincipal(repayment);
+		repayment.setRemainingOutstandingPrincipal(outStandingPrincipal);
+
+		if (isLastInstallment && !outStandingPrincipal.equals(BigDecimal.ZERO)) {
+			Repayment adjustedRepayment = new Repayment();
+			adjustedRepayment.setBorrowerPaymentAmount(borrowerPaymentAmount);
+			adjustedRepayment.setDate(payoutDate);
+			adjustedRepayment.setInitialOutstandingPrincipal(outStandingPrincipal);
+			adjustedRepayment.setInterest(calculateInterest(adjustedRepayment, nominalInterestRate));
+			adjustedRepayment.setPrincipal(calculatePrincipalAmount(adjustedRepayment));
+			outStandingPrincipal = calculateRemainingOutstandingPrincipal(adjustedRepayment);
+			adjustedRepayment.setRemainingOutstandingPrincipal(outStandingPrincipal);
+			adjustedRepayment
+					.setBorrowerPaymentAmount(adjustedRepayment.getInterest().add(adjustedRepayment.getPrincipal()));
+			repayment.setBorrowerPaymentAmount(
+					repayment.getBorrowerPaymentAmount().add(adjustedRepayment.getBorrowerPaymentAmount()));
+			repayment.setInterest(repayment.getInterest().add(adjustedRepayment.getInterest()));
+			repayment.setPrincipal(repayment.getPrincipal().add(adjustedRepayment.getPrincipal()));
+			repayment.setRemainingOutstandingPrincipal(outStandingPrincipal);
+
+		}
 		return repayment;
 	}
 

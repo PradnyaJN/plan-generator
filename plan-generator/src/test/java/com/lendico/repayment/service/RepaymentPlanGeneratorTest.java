@@ -29,12 +29,14 @@ public class RepaymentPlanGeneratorTest {
 	@Autowired
 	AnnuityCalculator annuityCalculator;
 
-	private LoanPayload loanPayload;
+	private LoanPayload loanPayload1, loanPayload2;
 	private static final Date TODAY = new Date(System.currentTimeMillis());
 
 	@Before
 	public void setUp() throws Exception {
-		loanPayload = new LoanPayload(24, new BigDecimal("5.0"), new BigDecimal("5000.0"), TODAY);
+		loanPayload1 = new LoanPayload(3, new BigDecimal("5.0"), new BigDecimal("100"), TODAY);
+		loanPayload2 = new LoanPayload(24, new BigDecimal("5.0"), new BigDecimal("5000"), TODAY);
+
 	}
 
 	@After
@@ -44,6 +46,12 @@ public class RepaymentPlanGeneratorTest {
 	@Test
 	public final void testGenerateRepaymentPlan() {
 
+		testGeneratePlan(loanPayload1);
+		testGeneratePlan(loanPayload2);
+
+	}
+
+	private void testGeneratePlan(LoanPayload loanPayload) {
 		RepaymentPlan repaymentPlan = planGenerator.generateRepaymentPlan(loanPayload);
 		assertNotNull(repaymentPlan);
 		assertNotNull(repaymentPlan.getRepaymentPlan());
@@ -54,15 +62,14 @@ public class RepaymentPlanGeneratorTest {
 		BigDecimal remainingPrincipal = initialAmount;
 
 		for (Repayment repayment : repaymentPlan.getRepaymentPlan()) {
-
+			System.out.println(repayment.toString());
 			principalPaid = principalPaid.add(repayment.getPrincipal());
 			remainingPrincipal = remainingPrincipal.subtract(repayment.getPrincipal());
 
 		}
 
-		assertTrue(principalPaid.setScale(2, RoundingMode.HALF_DOWN).compareTo(initialAmount)==0);
-		assertTrue(remainingPrincipal.compareTo(BigDecimal.ZERO)==0);
-
+		assertTrue(principalPaid.setScale(2, RoundingMode.HALF_DOWN).compareTo(initialAmount) == 0);
+		assertTrue(remainingPrincipal.compareTo(BigDecimal.ZERO) == 0);
 	}
 
 }

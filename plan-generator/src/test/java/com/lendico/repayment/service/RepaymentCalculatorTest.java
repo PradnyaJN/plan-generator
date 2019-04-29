@@ -106,7 +106,7 @@ public class RepaymentCalculatorTest {
 	 */
 	@Test
 	public final void testCalculateRepayment() {
-		Repayment repayment = repaymentCalculator.calculateRepayment(loanPayload,null);
+		Repayment repayment = repaymentCalculator.calculateRepayment(loanPayload,null, false);
 		assertEquals(new BigDecimal("20.83"), repayment.getInterest());
 		assertEquals(new BigDecimal("198.53"), repayment.getPrincipal());
 		assertEquals(new BigDecimal("4801.47"), repayment.getRemainingOutstandingPrincipal());

@@ -25,8 +25,10 @@ public class RepaymentPlanGeneratorImpl implements RepaymentPlanGenerator {
 		annuityCalculator.calculateAnnuity(payload);
 
 		Repayment preRepayment = null;
-		for (int i = 0; i < payload.getDuration(); i++) {
-			Repayment repayment = repaymentCalculator.calculateRepayment(payload, preRepayment);
+		for (int i = 1; i <= payload.getDuration(); i++) {
+			boolean isLastInstallment = (i == payload.getDuration() ) ? true : false;
+			System.out.println("isLast"+isLastInstallment);
+			Repayment repayment = repaymentCalculator.calculateRepayment(payload, preRepayment, isLastInstallment);
 			preRepayment = repayment;
 			System.out.println(repayment.toString());
 			repayments.add(preRepayment);
