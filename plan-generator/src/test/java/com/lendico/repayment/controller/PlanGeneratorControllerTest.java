@@ -1,8 +1,6 @@
 package com.lendico.repayment.controller;
 
-import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.math.BigDecimal;
@@ -73,16 +71,13 @@ public class PlanGeneratorControllerTest {
 		try {
 			mockMvc.perform(MockMvcRequestBuilders.post("http://localhost:8081/generate-plan")
 					.accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
-					.content(asJsonString(payload)))
-			.andExpect(status().isOk())
-			;
-			
+					.content(asJsonString(payload))).andExpect(status().isOk());
+
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 
-	
 	/*
 	 * converts a Java object into JSON representation
 	 */
